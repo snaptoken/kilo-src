@@ -268,6 +268,12 @@ void editorSelectSyntaxHighlight() {
         int patlen = strlen(s->filematch[i]);
         if (s->filematch[i][0] != '.' || p[patlen] == '\0') {
           E.syntax = s;
+
+          int filerow;
+          for (filerow = 0; filerow < E.numrows; filerow++) {
+            editorUpdateSyntax(&E.row[filerow]);
+          }
+
           return;
         }
       }
