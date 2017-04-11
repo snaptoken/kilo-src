@@ -255,6 +255,27 @@ int editorSyntaxToColor(int hl) {
   }
 }
 
+void editorSelectSyntaxHighlight() {
+  E.syntax = NULL;
+  if (E.filename == NULL) return;
+
+  for (unsigned int j = 0; j < HLDB_ENTRIES; j++) {
+    struct editorSyntax *s = &HLDB[j];
+    unsigned int i = 0;
+    while (s->filematch[i]) {
+      char *p = strstr(E.filename, s->filematch[i]);
+      if (p != NULL) {
+        int patlen = strlen(s->filematch[i]);
+        if (s->filematch[i][0] != '.' || p[patlen] == '\0') {
+          E.syntax = s;
+          return;
+        }
+      }
+      i++;
+    }
+  }
+}
+
 /*** row operations ***/
 
 int editorRowCxToRx(erow *row, int cx) {
