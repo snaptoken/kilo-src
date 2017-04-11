@@ -542,7 +542,9 @@ char *editorPrompt(char *prompt) {
     editorRefreshScreen();
 
     int c = editorReadKey();
-    if (c == '\x1b') {
+    if (c == DEL_KEY || c == CTRL_KEY('h') || c == BACKSPACE) {
+      if (buflen != 0) buf[--buflen] = '\0';
+    } else if (c == '\x1b') {
       editorSetStatusMessage("");
       free(buf);
       return NULL;
