@@ -74,11 +74,10 @@ int getCursorPosition(int *rows, int *cols) {
   }
   buf[i] = '\0';
 
-  printf("\r\n&buf[1]: '%s'\r\n", &buf[1]);
+  if (buf[0] != '\x1b' || buf[1] != '[') return -1;
+  if (sscanf(&buf[2], "%d;%d", rows, cols) != 2) return -1;
 
-  editorReadKey();
-
-  return -1;
+  return 0;
 }
 
 int getWindowSize(int *rows, int *cols) {
