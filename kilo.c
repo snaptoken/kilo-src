@@ -561,16 +561,21 @@ void editorDrawRows(struct abuf *ab) {
       if (len < 0) len = 0;
       if (len > E.screencols) len = E.screencols;
       char *c = &E.row[filerow].render[E.coloff];
+      unsigned char *hl = &E.row[filerow].hl[E.coloff];
       int j;
       for (j = 0; j < len; j++) {
-        if (isdigit(c[j])) {
-          abAppend(ab, "\x1b[31m", 5);
-          abAppend(ab, &c[j], 1);
+        if (hl[j] == HL_NORMAL) {
           abAppend(ab, "\x1b[39m", 5);
+          abAppend(ab, &c[j], 1);
         } else {
+          int color = editorSyntaxToColor(hl[j]);
+          char buf[16];
+          int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", color);
+          abAppend(ab, buf, clen);
           abAppend(ab, &c[j], 1);
         }
       }
+      abAppend(ab, "\x1b[39m", 5);
     }
 
     abAppend(ab, "\x1b[K", 3);
