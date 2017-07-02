@@ -233,6 +233,16 @@ void editorRowInsertChar(erow *row, int at, int c) {
   editorUpdateRow(row);
 }
 
+/*** editor operations ***/
+
+void editorInsertChar(int c) {
+  if (E.cy == E.numrows) {
+    editorAppendRow("", 0);
+  }
+  editorRowInsertChar(&E.row[E.cy], E.cx, c);
+  E.cx++;
+}
+
 /*** file i/o ***/
 
 void editorOpen(char *filename) {
