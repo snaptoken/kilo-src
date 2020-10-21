@@ -586,9 +586,7 @@ void editorOpen(char *filename) {
   size_t linecap = 0;
   ssize_t linelen;
   while ((linelen = getline(&line, &linecap, fp)) != -1) {
-    while (linelen > 0 && (line[linelen - 1] == '\n' ||
-                           line[linelen - 1] == '\r'))
-      linelen--;
+    line[(linelen = strcspn (line, "\r\n"))] = 0;
     editorInsertRow(E.numrows, line, linelen);
   }
   free(line);
@@ -709,11 +707,11 @@ struct abuf {
 #define ABUF_INIT {NULL, 0}
 
 void abAppend(struct abuf *ab, const char *s, int len) {
-  char *new = realloc(ab->b, ab->len + len);
+  char *app = realloc(ab->b, ab->len + len);
 
-  if (new == NULL) return;
-  memcpy(&new[ab->len], s, len);
-  ab->b = new;
+  if (app == NULL) return;
+  memcpy(&app[ab->len], s, len);
+  ab->b = app;
   ab->len += len;
 }
 
