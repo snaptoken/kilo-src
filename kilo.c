@@ -709,11 +709,11 @@ struct abuf {
 #define ABUF_INIT {NULL, 0}
 
 void abAppend(struct abuf *ab, const char *s, int len) {
-  char *new = realloc(ab->b, ab->len + len);
+  char *app = realloc(ab->b, ab->len + len);
 
-  if (new == NULL) return;
-  memcpy(&new[ab->len], s, len);
-  ab->b = new;
+  if (app == NULL) return;
+  memcpy(&app[ab->len], s, len);
+  ab->b = app;
   ab->len += len;
 }
 
