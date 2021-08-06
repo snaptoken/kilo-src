@@ -894,6 +894,7 @@ char *editorPrompt(char *prompt, void (*callback)(char *, int)) {
       if (buflen != 0) {
         editorSetStatusMessage("");
         if (callback) callback(buf, c);
+        free(buf);
         return buf;
       }
     } else if (!iscntrl(c) && c < 128) {
