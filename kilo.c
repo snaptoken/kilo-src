@@ -470,9 +470,24 @@ void editorInsertRow(int at, char *s, size_t len) {
 }
 
 void editorFreeRow(erow *row) {
-  free(row->render);
-  free(row->chars);
-  free(row->hl);
+  if (row) {
+    for (int i = 0; i < E.numrows; ++i) {
+      erow* tmp_row = row + i;
+
+      if (tmp_row->chars && tmp_row->render && tmp_row->hl) {
+        free(tmp_row->render);
+        free(tmp_row->chars);
+        free(tmp_row->hl);
+
+        tmp_row->render = NULL;
+        tmp_row->chars = NULL;
+        tmp_row->hl = NULL;
+      }
+    }
+
+    free(row);
+    row = NULL;
+  }
 }
 
 void editorDelRow(int at) {
@@ -965,6 +980,14 @@ void editorProcessKeypress() {
         quit_times--;
         return;
       }
+
+      editorFreeRow(E.row);
+
+      if (E.filename) {
+        free(E.filename);
+        E.filename = NULL;
+      }
+
       write(STDOUT_FILENO, "\x1b[2J", 4);
       write(STDOUT_FILENO, "\x1b[H", 3);
       exit(0);
